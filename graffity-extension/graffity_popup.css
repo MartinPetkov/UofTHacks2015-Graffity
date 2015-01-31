@@ -6,9 +6,6 @@
 .bordered-group {
     margin: 10px;
     padding:  5px;
-    border: dotted;
-    border-width: thin;
-    border-color: blue;
 }
 
 button {

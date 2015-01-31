@@ -12,6 +12,10 @@ function addGraffiti(request) {
     alert("Add the new graffiti: " + graffitiArr);
 }
 
+function initializeCanvas() {
+    console.log("Time to initialize the canvas: create, expand, make transparent, push to bottom to prevent drawing.")
+}
+
 
 window.onload = function() {
     console.log("gooby pls");
@@ -24,4 +28,6 @@ window.onload = function() {
                 toggleDrawMode(request);
             }
         });
+
+    initializeCanvas();
 }
