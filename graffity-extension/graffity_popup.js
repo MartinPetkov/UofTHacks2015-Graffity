@@ -2,13 +2,19 @@ var tab_url = "";
 
 function startDrawing() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: false, drawEnabled: true});
+        chrome.tabs.sendMessage(tabs[0].id, {mode: "toggleDrawing", drawEnabled: true});
     });
 }
 
 function stahpDrawing() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: false, drawEnabled: false});
+        chrome.tabs.sendMessage(tabs[0].id, {mode: "toggleDrawing", drawEnabled: false});
+    });
+}
+
+function startErasing() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {mode: "eraseDrawing"});
     });
 }
 
@@ -29,7 +35,7 @@ function loadGraffiti() {
         if(req.readyState == 4 && req.status == 200) {
             var graffitiArr = JSON.parse(req.responseText);
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-                    chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: true, graffitiArr: graffitiArr});
+                    chrome.tabs.sendMessage(tabs[0].id, {mode: "addGraffiti", graffitiArr: graffitiArr});
                 });
         }
     }
@@ -43,6 +49,7 @@ function loadGraffiti() {
 window.onload = function() {
     document.getElementById("start-drawing-button").onclick = startDrawing;
     document.getElementById("stop-drawing-button").onclick = stahpDrawing;
+    document.getElementById("erase-button").onclick = startErasing;
     document.getElementById("save-graffiti-button").onclick = saveGraffiti;
     document.getElementById("load-graffiti-button").onclick = loadGraffiti;
 

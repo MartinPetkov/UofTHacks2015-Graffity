@@ -12,8 +12,12 @@ function addGraffiti(request) {
     alert("Add the new graffiti: " + graffitiArr);
 }
 
+function startErasing() {
+    alert("Start erasing");
+}
+
 function initializeCanvas() {
-    console.log("Time to initialize the canvas: create, expand, make transparent, push to bottom to prevent drawing.")
+    console.log("Time to initialize the canvas: create, expand, make transparent, push to bottom to prevent drawing")
 }
 
 
@@ -22,10 +26,12 @@ window.onload = function() {
 
     chrome.runtime.onMessage.addListener(
         function(request, sender, sendResponse) {
-            if(request.addGraffiti == true) {
+            if(request.mode == "addGraffiti") {
                 addGraffiti(request);
-            } else {
+            } else if(request.mode == "toggleDrawing") {
                 toggleDrawMode(request);
+            } else if(request.mode == "eraseDrawing") {
+                startErasing();
             }
         });
 
