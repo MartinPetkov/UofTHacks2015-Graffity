@@ -1,16 +1,24 @@
 var tab_url = "";
 
 function startDrawing() {
-    alert("Start Drawing button was clicked");
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: false, drawEnabled: true});
+    });
 }
 
 function stahpDrawing() {
-    alert("Stop Drawing button was clicked");
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: false, drawEnabled: false});
+    });
 }
 
 function saveGraffiti() {
     var graffitiName = document.getElementById("graffiti-name").value;
-    alert("Save Graffiti with name: " + graffitiName);
+    if(graffitiName) {
+        alert("Save a graffiti with name: " + graffitiName);
+    } else {
+        alert("Please enter a name for your graffiti before saving.");
+    }
 }
 
 function loadGraffiti() {
@@ -20,14 +28,15 @@ function loadGraffiti() {
     req.onreadystatechange = function() {
         if(req.readyState == 4 && req.status == 200) {
             var graffitiArr = JSON.parse(req.responseText);
-            alert(graffitiArr);
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {addGraffiti: true, graffitiArr: graffitiArr});
+                });
         }
     }
 
     req.open("GET", url, true);
     req.setRequestHeader('req_graffiti_url', tab_url);
     req.send();
-
 }
 
 
@@ -40,6 +49,10 @@ window.onload = function() {
     chrome.tabs.query({'active': true, 'windowId': chrome.windows.WINDOW_ID_CURRENT},
         function(tabs){
             tab_url = tabs[0].url;
-        }
-    );
+        });
+
+    chrome.runtime.onMessage.addListener(
+        function(request, sender, sendRespone) {
+            alert("Ready to send picture to server");
+        });
 };

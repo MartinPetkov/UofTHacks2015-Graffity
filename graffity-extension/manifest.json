@@ -28,7 +28,8 @@
                 "canvas_drawer.js"
             ],
         "css": [
-                "bootstrap.min.css"
+                "bootstrap.min.css",
+                "graffity_popup.css"
             ],
         "matches": [ "<all_urls>" ],
         "run_at": "document_end"
