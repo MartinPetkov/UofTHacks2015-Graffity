@@ -6,8 +6,13 @@
     "version": "1.0",
 
     "browser_action": {
-        "default_icon": "graffity_icon.png",
+        "default_icon": "graffity_icon19.png",
         "default_popup": "graffity_popup.html"
+    },
+
+    "icons": {
+        "19": "graffity_icon19.png",
+        "48": "graffity_icon48.png"
     },
 
     "permissions": [

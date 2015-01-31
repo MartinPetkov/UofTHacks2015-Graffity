@@ -1,10 +1,16 @@
-#save_drawing_button {
+.bottom-button {
     vertical-align: top;
+    margin-top: 3px;
 }
 
-.bordered_group {
-    margin: 5px;
-    border-style: solid;
-    border-width: medium;
-    border-color: #6699FF;
+.bordered-group {
+    margin: 10px;
+    padding:  5px;
+    border: solid;
+    border-width: thin;
+    border-color: gray;
+}
+
+button {
+    width: 100%;
 }
