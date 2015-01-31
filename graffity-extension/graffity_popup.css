@@ -1,0 +1,10 @@
+#save_drawing_button {
+    vertical-align: top;
+}
+
+.bordered_group {
+    margin: 5px;
+    border-style: solid;
+    border-width: medium;
+    border-color: #6699FF;
+}
