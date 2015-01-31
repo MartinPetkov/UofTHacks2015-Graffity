@@ -1,4 +1,8 @@
+var clickX = new Array();
+var clickY = new Array();
+var clickDrag = new Array();
 var readyToDraw;
+var paint;
 
 function toggleDrawMode(request) {
     var drawEnabled = request.drawEnabled;
@@ -18,6 +22,35 @@ function addGraffiti(request) {
 
 function startErasing() {
     alert("Start erasing");
+}
+
+function addClick(x, y, dragging) {
+    clickX.push(x);
+    clickY.push(y);
+    clickDrag.push(dragging);
+}
+
+function redraw() {
+    var ctx = document.getElementById('graffity_canvas').getContext('2d');
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    ctx.strokeStyle = "#df4b26";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = 5;
+
+    for(var i=0; i < clickX.length; i++) {
+        ctx.beginPath();
+        if(clickDrag[i] && i) {
+            ctx.moveTo(clickX[i-1], clickY[i-1]);
+        } else {
+            ctx.moveTo(clickX[i] - 1, clickY[i] - 1);
+        }
+
+        ctx.lineTo(clickX[i], clickY[i]);
+        ctx.closePath();
+        ctx.stroke();
+    }
 }
 
 function initializeCanvas() {
@@ -44,16 +77,33 @@ function initializeCanvas() {
     //ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
 
-    drawingCanvas.addEventListener("mousemove", function(e) {
-        console.log("mousemove");
+    drawingCanvas.addEventListener("mousedown", function(e) {
+        var mouseX = e.pageX - this.offsetLeft;
+        var mouseY = e.pageY - this.offsetTop;
+
+        paint = true;
+        addClick(mouseX, mouseY);
+        redraw();
+
     }, false);
 
-    drawingCanvas.addEventListener("mousedown", function(e) {
-        console.log("mousedown");
+
+    drawingCanvas.addEventListener("mousemove", function(e) {
+        if(paint) {
+            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+            redraw();
+        }
+
     }, false);
+
 
     drawingCanvas.addEventListener("mouseup", function(e) {
-        console.log("mouseup");
+        paint = false;
+    }, false);
+
+
+    drawingCanvas.addEventListener("mouseleave", function(e) {
+        paint = false;
     }, false);
 }
 
