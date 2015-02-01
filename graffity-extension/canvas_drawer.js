@@ -10,8 +10,9 @@ function toggleDrawMode(request) {
         readyToDraw = true;
         document.getElementById('graffity_canvas').style.zIndex = 1000;
     } else {
+        eraseDrawing();
         readyToDraw = false;
-        document.getElementById('graffity_canvas').style.zIndex = 0;
+        document.getElementById('graffity_canvas').style.zIndex = -1;
     }
 }
 
@@ -20,8 +21,13 @@ function addGraffiti(request) {
     alert("Add the new graffiti: " + graffitiArr);
 }
 
-function startErasing() {
-    alert("Start erasing");
+function eraseDrawing() {
+    var drawingCanvas = document.getElementById('graffity_canvas');
+    var ctx = drawingCanvas.getContext('2d');
+    ctx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    clickX = [];
+    clickY = [];
+    clickDrag = [];
 }
 
 function addClick(x, y, dragging) {
@@ -35,7 +41,7 @@ function redraw() {
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    ctx.strokeStyle = "#df4b26";
+    ctx.strokeStyle = "#000000";
     ctx.lineJoin = "round";
     ctx.lineWidth = 5;
 
@@ -64,7 +70,7 @@ function initializeCanvas() {
     canvas_node.style.width = "100%";
     canvas_node.style.height = "100%";
     canvas_node.style.margin = 0;
-    canvas_node.style.zIndex = 0;
+    canvas_node.style.zIndex = -1;
 
     var html_node = document.getElementsByTagName("html")[0];
     html_node.insertBefore(canvas_node, html_node.firstChild);
@@ -78,19 +84,30 @@ function initializeCanvas() {
 
 
     drawingCanvas.addEventListener("mousedown", function(e) {
-        var mouseX = e.pageX - this.offsetLeft;
-        var mouseY = e.pageY - this.offsetTop;
+        if(readyToDraw) {
+            var rekt = document.getElementById('graffity_canvas').getBoundingClientRect();
+            var mouseX = e.clientX;
+            var mouseY = e.clientY;
 
-        paint = true;
-        addClick(mouseX, mouseY);
-        redraw();
+            console.log(mouseX + ', ' + mouseY);
+
+            paint = true;
+            addClick(mouseX, mouseY);
+            redraw();
+        }
 
     }, false);
 
 
     drawingCanvas.addEventListener("mousemove", function(e) {
-        if(paint) {
-            addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+        if(readyToDraw && paint) {
+            var rekt = document.getElementById('graffity_canvas').getBoundingClientRect();
+            var mouseX = e.clientX - rekt.left;
+            var mouseY = e.clientY - rekt.top;
+
+            console.log(mouseX + ', ' + mouseY);
+
+            addClick(mouseX, mouseY, true);
             redraw();
         }
 
@@ -116,7 +133,10 @@ window.onload = function() {
             } else if(request.mode == "toggleDrawing") {
                 toggleDrawMode(request);
             } else if(request.mode == "eraseDrawing") {
-                startErasing();
+                eraseDrawing();
+            } else if(request.mode == "saveDrawing") {
+                var graffitiToSavePng = document.getElementById("graffity_canvas").toDataURL("image/png");
+                sendResponse({graffitiToSave: graffitiToSavePng});
             }
         });
 

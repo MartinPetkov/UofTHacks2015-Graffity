@@ -19,9 +19,9 @@ def get_drawings(request):
 
 def upload_drawing(request):
     # Get the URL, name of the drawing, and the actual drawing data from the headers
-    req_graffiti_name = request.META.get('req_graffiti_name');
-    req_graffiti_url = request.META.get('req_graffiti_url');
-    req_drawing_image = request.META.get('req_drawing_image');
+    req_graffiti_name = request.META.get('req_graffiti_name')
+    req_graffiti_url = request.META.get('req_graffiti_url')
+    req_drawing_image = request.META.get('req_drawing_image')
 
 
     data = {'drawing_image': req_drawing_image}

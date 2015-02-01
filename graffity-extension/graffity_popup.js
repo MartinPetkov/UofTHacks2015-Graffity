@@ -14,17 +14,40 @@ function stahpDrawing() {
 
 function startErasing() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {mode: "eraseDrawing"});
+        chrome.tabs.sendMessage(tabs[0].id, {   mode: "eraseDrawing"});
     });
 }
 
 function saveGraffiti() {
     var graffitiName = document.getElementById("graffiti-name").value;
     if(graffitiName) {
-        alert("Save a graffiti with name: " + graffitiName);
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {mode: "saveDrawing"}, function(response) {
+                    sendToServer(graffitiName, response.graffitiToSave);
+                });
+        });
     } else {
         alert("Please enter a name for your graffiti before saving.");
     }
+}
+
+function sendToServer(graffitiName, graffitiToSave) {
+    var req = new XMLHttpRequest();
+    var url = "http://127.0.0.1:8000/graffity/upload_drawing/";
+    req.open("POST", url, true);
+    req.setRequestHeader('req_graffiti_url', tab_url);
+    req.setRequestHeader('req_graffiti_name', graffitiName);
+    req.setRequestHeader('req_drawing_image', graffitiToSave);
+
+    req.onreadystatechange = function() {
+        if(req.readyState == 4 && req.status == 200) {
+            alert("Successfully saved");
+        } else {
+            alert("Failed to save graffiti");
+        }
+    }
+
+    req.send();
 }
 
 function loadGraffiti() {
@@ -58,8 +81,4 @@ window.onload = function() {
             tab_url = tabs[0].url;
         });
 
-    chrome.runtime.onMessage.addListener(
-        function(request, sender, sendRespone) {
-            alert("Ready to send picture to server");
-        });
 };
